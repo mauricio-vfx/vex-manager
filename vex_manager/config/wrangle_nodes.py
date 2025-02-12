@@ -6,10 +6,8 @@ class WrangleNodes(Enum):
     DEFORMATION_WRANGLE = "deformationwrangle"
     RIG_ATTRIB_WRANGLE = "kinefx::rigattribwrangle"
     VOLUME_WRANGLE = "volumewrangle"
-
+    GAS_FIELD_WRANGLE = "gasfieldwrangle"
     GEOMETRY_WRANGLE = "geometrywrangle"
     POP_WRANGLE = "popwrangle"
-
     WRANGLE = "wrangle"
-
     CHANNEL_WRANGLE = "channelwrangle"

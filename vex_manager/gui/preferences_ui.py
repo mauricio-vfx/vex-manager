@@ -94,7 +94,7 @@ class PreferencesUI(QtWidgets.QWidget):
 
         self.color_scheme_list_widget = QtWidgets.QListWidget()
         self.color_scheme_list_widget.setSizePolicy(
-            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Maximum
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
         )
 
         self.tab_size_spin_box = QtWidgets.QSpinBox()

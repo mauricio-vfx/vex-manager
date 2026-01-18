@@ -84,6 +84,10 @@ class FileExplorerTreeView(QtWidgets.QTreeView):
 
                 if current_index.data():
                     item_path = self.file_system_model.filePath(current_index)
+
+                    if os.path.isfile(item_path):
+                        item_path = os.path.dirname(item_path)
+
                     file_path = core.create_new_vex_file(item_path, file_name)
                 else:
                     file_path = core.create_new_vex_file(self.library_path, file_name)

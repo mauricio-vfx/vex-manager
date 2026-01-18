@@ -11,3 +11,4 @@ class WrangleNodes(Enum):
     POP_WRANGLE = "popwrangle"
     WRANGLE = "wrangle"
     CHANNEL_WRANGLE = "channelwrangle"
+    SNIPPET = "snippet"

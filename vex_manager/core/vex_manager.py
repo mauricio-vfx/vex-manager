@@ -23,6 +23,8 @@ def set_vex_code_in_selected_wrangle_node(vex_code: str, insert: bool = False) -
                     snippet_parm = node.parm("snippet")
                 elif "vexsnippet" in parms:
                     snippet_parm = node.parm("vexsnippet")
+                elif "code" in parms:
+                    snippet_parm = node.parm("code")
                 else:
                     logger.error("No snippet parm found.")
 

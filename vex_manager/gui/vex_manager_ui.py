@@ -1,6 +1,11 @@
-from PySide2 import QtWidgets
-from PySide2 import QtCore
-from PySide2 import QtGui
+try:
+    from PySide6 import QtWidgets
+    from PySide6 import QtCore
+    from PySide6 import QtGui
+except ImportError:
+    from PySide2 import QtWidgets
+    from PySide2 import QtCore
+    from PySide2 import QtGui
 
 import hou
 
@@ -108,18 +113,8 @@ class VEXManagerUI(QtWidgets.QWidget):
             self._on_save_clicked_preferences_ui
         )
 
-        self.file_explorer_widget.current_item_changed.connect(
-            self._file_explorer_current_item_changed_widget
-        )
-        self.file_explorer_widget.current_item_renamed.connect(
-            self._file_explorer_current_item_renamed_widget
-        )
-
-        self.vex_editor_widget.name_editing_finished.connect(
-            self._vex_editor_name_editing_finished_widget
-        )
-        self.vex_editor_widget.save_clicked.connect(
-            self._vex_editor_saved_clicked_widget
+        self.file_explorer_widget.double_clicked.connect(
+            self._file_explorer_double_clicked_widget
         )
 
     def _load_preferences(self) -> None:
@@ -137,7 +132,7 @@ class VEXManagerUI(QtWidgets.QWidget):
 
     @staticmethod
     def _open_help() -> None:
-        webbrowser.open("https://github.com/mauriciogonzalezsoto/vex-manager")
+        webbrowser.open("https://github.com/mauricio-vfx/vex-manager")
 
     def _on_save_clicked_preferences_ui(self) -> None:
         self._load_preferences()
@@ -145,22 +140,10 @@ class VEXManagerUI(QtWidgets.QWidget):
 
         self.vex_editor_widget.vex_plain_text_editor.set_font_and_colors()
 
-    def _file_explorer_current_item_changed_widget(self, file_path: str) -> None:
+    def _file_explorer_double_clicked_widget(self, file_path: str) -> None:
         self.current_vex_file_path = file_path
         self.vex_editor_widget.set_file_path(self.current_vex_file_path)
         self.vex_editor_widget.display_code()
-
-    def _file_explorer_current_item_renamed_widget(self, file_path: str) -> None:
-        self.current_vex_file_path = file_path
-        self.vex_editor_widget.set_file_path(self.current_vex_file_path)
-
-    def _vex_editor_name_editing_finished_widget(self, new_name: str) -> None:
-        self.file_explorer_widget.rename_current_item(new_name)
-
-    def _vex_editor_saved_clicked_widget(self) -> None:
-        self.file_explorer_widget.set_current_path(
-            self.vex_editor_widget.get_current_file_path()
-        )
 
     def _update(self) -> None:
         if self.file_explorer_widget.get_library_path() != self.library_path:
@@ -175,8 +158,6 @@ class VEXManagerUI(QtWidgets.QWidget):
 
             self.geometry = self.saveGeometry()
 
-        self.file_explorer_widget.clear_file_system_watcher()
-
         self.preferences_ui.close()
 
     def showEvent(self, event: QtGui.QShowEvent) -> None:
@@ -184,3 +165,5 @@ class VEXManagerUI(QtWidgets.QWidget):
 
         if self.geometry:
             self.restoreGeometry(self.geometry)
+
+        self.setFocus()

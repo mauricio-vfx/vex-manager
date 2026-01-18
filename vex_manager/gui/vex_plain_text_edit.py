@@ -1,6 +1,11 @@
-from PySide2 import QtWidgets
-from PySide2 import QtCore
-from PySide2 import QtGui
+try:
+    from PySide6 import QtWidgets
+    from PySide6 import QtCore
+    from PySide6 import QtGui
+except ImportError:
+    from PySide2 import QtWidgets
+    from PySide2 import QtCore
+    from PySide2 import QtGui
 
 import hou
 
@@ -99,7 +104,11 @@ class VEXPlainTextEdit(QtWidgets.QPlainTextEdit):
 
                     if text_at_cursor == char:
                         text_cursor = self.textCursor()
-                        text_cursor.movePosition(text_cursor.NextCharacter)
+                        text_cursor.movePosition(
+                            QtGui.QTextCursor.Right,
+                            QtGui.QTextCursor.MoveAnchor,
+                            1
+                        )
                         self.setTextCursor(text_cursor)
 
                         return True
@@ -143,7 +152,11 @@ class VEXPlainTextEdit(QtWidgets.QPlainTextEdit):
                 self.insertPlainText("\n\n")
                 self.insertPlainText("".ljust(leading_space))
 
-                text_cursor.movePosition(text_cursor.Up)
+                text_cursor.movePosition(
+                    QtGui.QTextCursor.Up,
+                    QtGui.QTextCursor.MoveAnchor,
+                    1
+                )
                 self.setTextCursor(text_cursor)
 
                 leading_space += self.tab_size
@@ -173,7 +186,11 @@ class VEXPlainTextEdit(QtWidgets.QPlainTextEdit):
         self.insertPlainText(matching_delimiter)
 
         text_cursor = self.textCursor()
-        text_cursor.movePosition(text_cursor.PreviousCharacter)
+        text_cursor.movePosition(
+            QtGui.QTextCursor.Left,
+            QtGui.QTextCursor.MoveAnchor,
+            1
+        )
         self.setTextCursor(text_cursor)
 
     def _load_preferences(self) -> None:

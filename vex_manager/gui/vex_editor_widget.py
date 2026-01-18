@@ -1,5 +1,9 @@
-from PySide2 import QtWidgets
-from PySide2 import QtCore
+try:
+    from PySide6 import QtWidgets
+    from PySide6 import QtCore
+except ImportError:
+    from PySide2 import QtWidgets
+    from PySide2 import QtCore
 
 from pathlib import Path
 import logging
@@ -14,8 +18,6 @@ logger = logging.getLogger(f"vex_manager.{__name__}")
 
 
 class VEXEditorWidget(QtWidgets.QWidget):
-    name_editing_finished = QtCore.Signal(str)
-    save_clicked = QtCore.Signal()
 
     def __init__(self) -> None:
         super().__init__()
@@ -71,28 +73,16 @@ class VEXEditorWidget(QtWidgets.QWidget):
 
         if utils.is_valid_file_name(name):
             if os.path.exists(self.library_path):
-                self.name_editing_finished.emit(name)
+                self.file_path = core.rename_vex_file(self.file_path, name)
         else:
             logger.error(f"Invalid file name {name!r}")
 
     def _save_changes_clicked_push_button(self) -> None:
         if self.file_path:
-            self._save_file()
-        else:
-            name = self.name_line_edit.text()
-
-            if not utils.is_valid_file_name(name):
-                name = ""
-
-            self.file_path, self.base_name = core.create_new_vex_file(
-                library_path=self.library_path, name=name
-            )
-
-            if self.file_path:
-
+            if os.path.exists(self.file_path):
                 self._save_file()
-
-                self.save_clicked.emit()
+            else:
+                logger.error(f"{self.file_path!r} does not exist.")
 
     def _replace_code_clicked_push_button(self) -> None:
         core.set_vex_code_in_selected_wrangle_node(
@@ -127,13 +117,20 @@ class VEXEditorWidget(QtWidgets.QWidget):
         return self.library_path
 
     def set_file_path(self, file_path: str) -> None:
-        self.file_path = file_path
+        path = Path(file_path)
+        path_suffix = path.suffix
 
-        if os.path.exists(file_path):
-            self.base_name = Path(self.file_path).stem
-            self.name_line_edit.setText(self.base_name)
+        if path_suffix:
+            self.file_path = file_path
+
+            if os.path.exists(file_path):
+                self.base_name = path.stem
+                self.name_line_edit.setText(self.base_name)
+            else:
+                self.name_line_edit.setText("")
         else:
             self.name_line_edit.setText("")
+            self.file_path = ""
 
     def set_library_path(self, library_path: str) -> None:
         self.library_path = library_path

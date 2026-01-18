@@ -6,6 +6,7 @@ VEX Manager is a tool for Houdini that saves, manages, and imports VEX code pres
 ## Table of Contents
 - [Installation](#installation)
 - [Shelf Button Creation](#shelf-button-creation)
+- [Compatibility](#compatibility)
 
 ## Installation
 1. Download the project:
@@ -26,9 +27,15 @@ VEX Manager is a tool for Houdini that saves, manages, and imports VEX code pres
 2. **Right-click** on an empty space in the Shelf and select **New Tool...**
 3. In the **Edit tool** window, in the **Script** section, copy the following Python code
     ```python  
-   from vex_manager import VEXManagerUI
-   
-   vex_manager_ui = VEXManagerUI()
-   vex_manager_ui.display()
+    from vex_manager import VEXManagerUI
+
+    VEXManagerUI.display()
     ```
 4. Click **Accept** to save the new button on the Shelf
+
+## Compatibility
+This tool is compatible with the following versions of Houdini:
+
+### Houdini Versions:
+- [x] Houdini 20.5
+- [x] Houdini 21.0

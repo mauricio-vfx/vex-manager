@@ -1,7 +1,12 @@
-from PySide2 import QtCore
-from PySide2 import QtGui
+try:
+    from PySide6 import QtCore
+    from PySide6 import QtGui
+except ImportError:
+    from PySide2 import QtCore
+    from PySide2 import QtGui
 
 import logging
+import re
 
 from vex_manager.config import VEXSyntaxis
 
@@ -18,15 +23,15 @@ class VEXSyntaxHighlighter(QtGui.QSyntaxHighlighter):
         data_types = "|".join(VEXSyntaxis.DATA_TYPES)
         vex_functions = "|".join(VEXSyntaxis.VEX_FUNCTIONS)
 
-        self.numbers_reg_exp = QtCore.QRegExp(r"\b\d+(\.\d+)?\b")
-        self.functions_reg_exp = QtCore.QRegExp(rf"\b({vex_functions})\b")
-        self.keywords_reg_exp = QtCore.QRegExp(rf"\b({keywords})\b")
-        self.types_reg_exp = QtCore.QRegExp(rf"\b({data_types})\b")
-        self.references_reg_exp = QtCore.QRegExp(r"[\w]*@[\w-]+")
-        self.strings_reg_exp = QtCore.QRegExp(r'(["\'])((?:\\.|[^"\\])*)\1')
-        self.comments_reg_exp = QtCore.QRegExp(r"//.*")
-        self.comment_start_reg_exp = QtCore.QRegularExpression(r"/\*")
-        self.comment_end_reg_exp = QtCore.QRegularExpression(r"\*/")
+        self.numbers_reg_exp = re.compile(r"\b\d+(\.\d+)?\b")
+        self.functions_reg_exp = re.compile(rf"\b({vex_functions})\b")
+        self.keywords_reg_exp = re.compile(rf"\b({keywords})\b")
+        self.types_reg_exp = re.compile(rf"\b({data_types})\b")
+        self.references_reg_exp = re.compile(r"[\w]*@[\w-]+")
+        self.strings_reg_exp = re.compile(r'(["\'])((?:\\.|[^"\\])*)\1')
+        self.comments_reg_exp = re.compile(r"//.*")
+        self.comment_start_reg_exp = re.compile(r"/\*")
+        self.comment_end_reg_exp = re.compile(r"\*/")
 
         self.plain_text_char_format = QtGui.QTextCharFormat()
         self.numbers_text_char_format = QtGui.QTextCharFormat()
@@ -77,17 +82,15 @@ class VEXSyntaxHighlighter(QtGui.QSyntaxHighlighter):
 
     def _set_vex_syntax_highlighter(
         self,
-        reg_exp: QtCore.QRegExp,
+        reg_exp: re.Pattern[str],
         text: str,
         text_char_format: QtGui.QTextCharFormat,
     ) -> None:
 
-        index = reg_exp.indexIn(text)
-
-        while index >= 0:
-            length = reg_exp.matchedLength()
-            self.setFormat(index, length, text_char_format)
-            index = reg_exp.indexIn(text, index + length)
+        for match in reg_exp.finditer(text):
+            start = match.start()
+            length = match.end() - match.start()
+            self.setFormat(start, length, text_char_format)
 
     def highlightBlock(self, text: str) -> None:
         self.setFormat(0, len(text), self.plain_text_char_format)

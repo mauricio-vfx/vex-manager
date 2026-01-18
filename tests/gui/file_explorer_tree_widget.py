@@ -2,7 +2,7 @@ from PySide2 import QtWidgets
 
 import sys
 
-from vex_manager.gui.file_explorer_tree_widget import FileExplorerTreeWidget
+from vex_manager.gui.file_explorer_tree_view import FileExplorerTreeWidget
 
 
 def main():
